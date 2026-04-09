@@ -1,3 +1,5 @@
+"""Shared test constants for certbot-dns-vipdns tests."""
+
 FAKE_URL = 'https://vipdns.nl'
 FAKE_TOKEN = 'test-api-token'
 DOMAIN = 'example.com'

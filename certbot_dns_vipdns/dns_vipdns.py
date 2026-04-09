@@ -1,3 +1,5 @@
+"""Certbot DNS authenticator plugin for VipDNS."""
+
 import json
 import logging
 from pathlib import Path
@@ -14,13 +16,13 @@ def _load_credentials_file(path: str) -> tuple[str | None, str]:
     """Parse a JSON or YAML credentials file; return (api_url, api_token) or raise PluginError."""
     suffix = Path(path).suffix.lower()
     try:
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             if suffix == '.json':
                 data = json.load(f)
             else:  # .yaml or .yml
                 data = yaml.safe_load(f)
-    except FileNotFoundError:
-        raise errors.PluginError(f'Credentials file not found: {path}')
+    except FileNotFoundError as exc:
+        raise errors.PluginError(f'Credentials file not found: {path}') from exc
     except json.JSONDecodeError as exc:
         raise errors.PluginError(f'Invalid JSON in credentials file {path}: {exc}')
     except yaml.YAMLError as exc:
@@ -70,6 +72,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         super().__init__(*args, **kwargs)
         self._api_url: str | None = None
         self._api_token: str | None = None
+        self.credentials = None
 
     @classmethod
     def add_parser_arguments(cls, add, default_propagation_seconds: int = 60) -> None:

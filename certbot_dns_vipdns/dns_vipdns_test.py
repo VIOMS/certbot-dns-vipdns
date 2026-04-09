@@ -1,3 +1,6 @@
+"""Tests for certbot-dns-vipdns."""
+# pylint: disable=protected-access
+
 import json
 import os
 import tempfile
@@ -116,15 +119,15 @@ class AuthenticatorTest(unittest.TestCase):
 
     def test_credentials_from_ini(self):
         mock_credentials = mock.MagicMock()
-        mock_credentials.conf.side_effect = lambda key: {
+        mock_credentials.conf.side_effect = {
             'api_url': 'https://vipdns.test',
             'api_token': 'ini-token',
-        }[key]
+        }.__getitem__
 
-        with mock.patch.object(self.auth, 'conf', side_effect=lambda key: {
+        with mock.patch.object(self.auth, 'conf', side_effect={
             'api-url': None,
             'api-token': None,
-        }.get(key)):
+        }.get):
             with mock.patch.object(self.auth, '_configure_credentials', return_value=mock_credentials):
                 self.auth._setup_credentials()
 
@@ -132,10 +135,10 @@ class AuthenticatorTest(unittest.TestCase):
         self.assertEqual(self.auth._api_token, 'ini-token')
 
     def test_cli_flags_override_ini(self):
-        with mock.patch.object(self.auth, 'conf', side_effect=lambda key: {
+        with mock.patch.object(self.auth, 'conf', side_effect={
             'api-url': 'https://cli.vipdns.test',
             'api-token': 'cli-token',
-        }.get(key)):
+        }.get):
             with mock.patch.object(self.auth, '_configure_credentials') as mock_configure:
                 self.auth._setup_credentials()
                 mock_configure.assert_not_called()
@@ -159,13 +162,13 @@ class AuthenticatorTest(unittest.TestCase):
     def test_setup_credentials_from_json(self):
         path = tempfile.mkstemp(suffix='.json')[1]
         try:
-            with open(path, 'w') as f:
+            with open(path, 'w', encoding='utf-8') as f:
                 f.write('{"api_url": "https://vipdns.test", "api_token": "json-token"}')
-            with mock.patch.object(self.auth, 'conf', side_effect=lambda key: {
+            with mock.patch.object(self.auth, 'conf', side_effect={
                 'api-url': None,
                 'api-token': None,
                 'credentials': path,
-            }.get(key)):
+            }.get):
                 self.auth._setup_credentials()
             self.assertEqual(self.auth._api_url, 'https://vipdns.test')
             self.assertEqual(self.auth._api_token, 'json-token')
