@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "certbot-dns-vipdns"
+version = "0.1.0"
+description = "VipDNS DNS Authenticator plugin for Certbot"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "certbot>=2.0.0",
+    "requests>=2.32.0",
+    "PyYAML>=6.0",
+]
+
+[project.entry-points."certbot.plugins"]
+dns-vipdns = "certbot_dns_vipdns.dns_vipdns:Authenticator"
+
+[tool.hatch.build.targets.wheel]
+packages = ["certbot_dns_vipdns"]
+
+[tool.pytest.ini_options]
+testpaths = ["certbot_dns_vipdns"]
+python_files = ["*_test.py"]

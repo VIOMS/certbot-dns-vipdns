@@ -1,0 +1,5 @@
+FAKE_URL = 'https://vipdns.nl'
+FAKE_TOKEN = 'test-api-token'
+DOMAIN = 'example.com'
+VALIDATION_NAME = '_acme-challenge.example.com'
+VALIDATION = 'fake-validation-string'
