@@ -78,7 +78,7 @@ class Authenticator(dns_common.DNSAuthenticator):
     def add_parser_arguments(cls, add, default_propagation_seconds: int = 60) -> None:
         super().add_parser_arguments(add, default_propagation_seconds=default_propagation_seconds)
         add('credentials', help='VipDNS credentials INI file.')
-        add('api-url', default='https://vipdns.nl', help='VipDNS base URL (overrides credentials file).')
+        add('api-url', default='https://api.vipdns.nl', help='VipDNS base URL (overrides credentials file).')
         add('api-token', help='VipDNS API token (overrides credentials file).')
 
     def more_info(self) -> str:
